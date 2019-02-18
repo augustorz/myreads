@@ -9,7 +9,7 @@ const SHELVES = [
   { title: 'Read', key: 'read' }
 ]
 
-class ListBooks extends Component {
+class BookList extends Component {
   state = {
     shelves: {}
   }
@@ -30,7 +30,10 @@ class ListBooks extends Component {
 
   addBookToShelf = ({shelves, book, newShelf}) => {
     book.shelf = newShelf
-    shelves[newShelf].push(book)
+
+    if (newShelf !== 'none') {
+      shelves[newShelf].push(book)
+    }
   }
 
   changeBookShelf = ({book, newShelf}) => {
@@ -76,4 +79,4 @@ class ListBooks extends Component {
   }
 }
 
-export default ListBooks;
+export default BookList;

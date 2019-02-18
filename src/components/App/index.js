@@ -1,7 +1,7 @@
 import React from 'react'
 import './index.css'
 
-import ListBooks from '../ListBooks'
+import BookList from '../BookList'
 
 class BooksApp extends React.Component {
   state = {
@@ -39,7 +39,7 @@ class BooksApp extends React.Component {
             </div>
           </div>
         ) : (
-          <ListBooks />
+          <BookList />
         )}
       </div>
     )
