@@ -7,20 +7,20 @@ const Book = ({ book, onChangeBookShelf }) => (
   <li>
     <div className="book">
       <div className="book-top">
-        <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url("${book.imageLinks.thumbnail}")` }}></div>
+        <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url("${book.imageLinks.thumbnail}")` }} />
         <BookSelect book={book} onChangeBookShelf={onChangeBookShelf} />
       </div>
       <div className="book-title">{book.title}</div>
-      {book.authors.map((author, index) => (
-        <div className="book-authors" key={index}>{author}</div>
+      {book.authors && book.authors.map(author => (
+        <div className="book-authors" key={author}>{author}</div>
       ))}
     </div>
   </li>
-)
+);
 
 Book.propTypes = {
-  book: PropTypes.object.isRequired,
-  onChangeBookShelf: PropTypes.func.isRequired
-}
+  book: PropTypes.instanceOf(Object).isRequired,
+  onChangeBookShelf: PropTypes.func.isRequired,
+};
 
-export default Book
+export default Book;

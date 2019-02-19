@@ -1,9 +1,9 @@
 import React from 'react';
-import PropTypes from 'prop-types'
+import PropTypes from 'prop-types';
 
-import Book from '../Book'
+import Book from '../Book';
 
-const BookShelf = ({ title, books = [], onChangeBookShelf }) => (
+const BookShelf = ({ title, books, onChangeBookShelf }) => (
   <div className="bookshelf">
     <h2 className="bookshelf-title">{title}</h2>
     <div className="bookshelf-books">
@@ -14,12 +14,16 @@ const BookShelf = ({ title, books = [], onChangeBookShelf }) => (
       </ol>
     </div>
   </div>
-)
+);
 
 BookShelf.propTypes = {
   title: PropTypes.string.isRequired,
   books: PropTypes.instanceOf(Array),
-  onChangeBookShelf: PropTypes.func.isRequired
-}
+  onChangeBookShelf: PropTypes.func.isRequired,
+};
+
+BookShelf.defaultProps = {
+  books: [],
+};
 
 export default BookShelf;
