@@ -7,7 +7,7 @@ const Book = ({ book, onChangeBookShelf }) => (
   <li>
     <div className="book">
       <div className="book-top">
-        <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url("${book.imageLinks.thumbnail}")` }} />
+        <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url("${book.imageLinks && book.imageLinks.thumbnail}")` }} />
         <BookSelect book={book} onChangeBookShelf={onChangeBookShelf} />
       </div>
       <div className="book-title">{book.title}</div>
