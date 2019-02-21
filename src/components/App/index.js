@@ -38,7 +38,11 @@ class App extends Component {
   changeBookShelf = ({ book, newShelf }) => {
     const { shelves } = this.state;
 
-    shelves[book.shelf] = this.removeBookFromShelf({ shelves, book });
+    if (shelves[book.shelf]) {
+      shelves[book.shelf] = this.removeBookFromShelf({ shelves, book });
+    }
+
+    this.updateBookShelf({ book, newShelf });
     this.addBookToShelf({ shelves, book, newShelf });
     this.setState({ shelves });
   }
@@ -58,6 +62,20 @@ class App extends Component {
     }
   }
 
+  updateBookShelf = async ({ book, newShelf }) => {
+    const { shelves } = this.state;
+
+    try {
+      //await BooksAPI.update(book, newShelf);
+      throw new Error('Opa!');
+    } catch (error) {
+      const { shelf: oldShelf } = book;
+
+      shelves[book.newShelf] = this.removeBookFromShelf({ shelves, book });
+      this.addBookToShelf({ shelves, book, oldShelf });
+    }
+  }
+
   render() {
     const { shelves } = this.state;
 
@@ -73,7 +91,14 @@ class App extends Component {
             />
           )}
         />
-        <Route path="/search" component={BookSearch} />
+        <Route
+          path="/search"
+          render={() => (
+            <BookSearch
+              onChangeBookShelf={this.changeBookShelf}
+            />
+          )}
+        />
       </div>
     );
   }
