@@ -63,16 +63,12 @@ class App extends Component {
   }
 
   updateBookShelf = async ({ book, newShelf }) => {
-    const { shelves } = this.state;
-
     try {
-      //await BooksAPI.update(book, newShelf);
-      throw new Error('Opa!');
+      await BooksAPI.update(book, newShelf);
     } catch (error) {
-      const { shelf: oldShelf } = book;
-
-      shelves[book.newShelf] = this.removeBookFromShelf({ shelves, book });
-      this.addBookToShelf({ shelves, book, oldShelf });
+      throw (error);
+      // shelves[book.newShelf] = this.removeBookFromShelf({ shelves, book });
+      // this.addBookToShelf({ shelves, book, oldShelf });
     }
   }
 
