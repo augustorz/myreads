@@ -11,9 +11,7 @@ class BookSearch extends Component {
     books: [],
   }
 
-  handleSearch = (event) => {
-    const query = event.target.value;
-
+  handleSearch = ({ target: { value: query } }) => {
     this.setState({
       books: [],
       query,
