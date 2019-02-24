@@ -36,40 +36,48 @@ class App extends Component {
   }
 
   changeBookShelf = ({ book, newShelf }) => {
+    this.removeBookFromShelf(book);
+    this.addBookToShelf({ book, newShelf });
+    this.updateBookShelf({ book, newShelf });
+  }
+
+  removeBookFromShelf = (book) => {
     const { shelves } = this.state;
 
-    if (shelves[book.shelf]) {
-      shelves[book.shelf] = this.removeBookFromShelf({ shelves, book });
+    if (book.shelf) {
+      shelves[book.shelf] = shelves[book.shelf].filter(({ id }) => (
+        id !== book.id
+      ));
     }
 
-    this.updateBookShelf({ book, newShelf });
-    this.addBookToShelf({ shelves, book, newShelf });
     this.setState({ shelves });
   }
 
-  removeBookFromShelf = ({ shelves, book }) => (
-    shelves[book.shelf].filter(({ id }) => (
-      id !== book.id
-    ))
-  )
+  addBookToShelf = ({ book, newShelf }) => {
+    const { shelves } = this.state;
+    const newBook = book;
+    newBook.oldShelf = book.shelf;
+    newBook.shelf = newShelf;
 
-  addBookToShelf = ({ shelves, book, newShelf }) => {
-    const currentBook = book;
-    currentBook.shelf = newShelf;
-
-    if (newShelf !== 'none') {
-      shelves[newShelf].push(currentBook);
+    if (newShelf) {
+      shelves[newShelf].push(newBook);
     }
+
+    this.setState({ shelves });
   }
 
   updateBookShelf = async ({ book, newShelf }) => {
     try {
-      await BooksAPI.update(book, newShelf);
+      await BooksAPI.update(book, newShelf || 'none');
     } catch (error) {
+      this.restoreBookShelf({ book, newShelf });
       throw (error);
-      // shelves[book.newShelf] = this.removeBookFromShelf({ shelves, book });
-      // this.addBookToShelf({ shelves, book, oldShelf });
     }
+  }
+
+  restoreBookShelf = ({ book }) => {
+    this.removeBookFromShelf(book);
+    this.addBookToShelf({ book, newShelf: book.oldShelf });
   }
 
   render() {
