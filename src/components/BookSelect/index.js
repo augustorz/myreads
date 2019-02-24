@@ -1,20 +1,32 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { SHELVES } from './constants';
 
-const BookSelect = ({ book, onChangeBookShelf }) => (
-  <div className="book-shelf-changer">
-    <select
-      value={book.shelf}
-      onChange={(event) => { onChangeBookShelf({ book, newShelf: event.target.value }); }}
-    >
-      <option value="move" disabled>Move to...</option>
-      <option value="currentlyReading">Currently Reading</option>
-      <option value="wantToRead">Want to Read</option>
-      <option value="read">Read</option>
-      <option value="none">None</option>
-    </select>
-  </div>
-);
+const BookSelect = ({ book, onChangeBookShelf }) => {
+  const onChange = ({ target: { value: newShelf } }) => {
+    onChangeBookShelf({ book, newShelf });
+  };
+
+  return (
+    <div className="book-shelf-changer">
+      <select
+        value={book.shelf}
+        onChange={onChange}
+      >
+        <option value="move" disabled>
+          Move to...
+        </option>
+        {
+          SHELVES.map(({ value, text }) => (
+            <option key={value} value={value}>
+              {text}
+            </option>
+          ))
+        }
+      </select>
+    </div>
+  );
+};
 
 BookSelect.propTypes = {
   book: PropTypes.instanceOf(Object).isRequired,
