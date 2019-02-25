@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import * as BooksAPI from '../../BooksAPI';
+import * as BooksAPI from '../../api/BooksAPI';
 
-import Book from '../../components/Book';
+import BooksGrid from '../../components/BooksGrid';
 
 class BookSearch extends Component {
   state = {
@@ -54,11 +54,7 @@ class BookSearch extends Component {
           </div>
         </div>
         <div className="search-books-results">
-          <ol className="books-grid">
-            {books.map(book => (
-              <Book key={book.id} book={book} onChangeBookShelf={onChangeBookShelf} />
-            ))}
-          </ol>
+          <BooksGrid books={books} onChangeBookShelf={onChangeBookShelf} />
         </div>
       </div>
     );

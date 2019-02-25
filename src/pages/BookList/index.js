@@ -1,14 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { SHELVES } from './constants';
+import './index.css';
 
 import BookShelf from '../../components/BookShelf';
-
-const SHELVES = [
-  { title: 'Current Reading', key: 'currentlyReading' },
-  { title: 'Want to Read', key: 'wantToRead' },
-  { title: 'Read', key: 'read' },
-];
 
 const BookList = ({ shelves, onChangeBookShelf }) => (
   <div className="list-books">

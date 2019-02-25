@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { SHELVES } from './constants';
+import './index.css';
 
 const BookSelect = ({ book, onChangeBookShelf }) => {
   const onChange = ({ target: { value: newShelf } }) => {

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
-import * as BooksAPI from '../../BooksAPI';
+import * as BooksAPI from '../../api/BooksAPI';
 
 import './index.css';
 
@@ -70,14 +70,10 @@ class App extends Component {
     try {
       await BooksAPI.update(book, newShelf || 'none');
     } catch (error) {
-      this.restoreBookShelf({ book, newShelf });
+      this.removeBookFromShelf(book);
+      this.addBookToShelf({ book, newShelf: book.oldShelf });
       throw (error);
     }
-  }
-
-  restoreBookShelf = ({ book }) => {
-    this.removeBookFromShelf(book);
-    this.addBookToShelf({ book, newShelf: book.oldShelf });
   }
 
   render() {
