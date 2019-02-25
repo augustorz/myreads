@@ -1,14 +1,23 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './App';
+import { BrowserRouter } from 'react-router-dom';
+import { shallow } from 'enzyme';
+import App from '.';
 
-/**
- This course is not designed to teach Test Driven Development.
- Feel free to use this file to test your application, but it
- is not required.
-* */
+describe('App', () => {
+  let wrapper;
+  beforeEach(() => {
+    wrapper = shallow(
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>,
+    );
+  });
 
-it('renders without crashing', () => {
-  const div = document.createElement('div');
-  ReactDOM.render(<App />, div);
+  it('should match snapshot', () => {
+    expect(wrapper.html()).toMatchSnapshot();
+  });
+
+  describe('componentDidMount', () => {
+    
+  });
 });
