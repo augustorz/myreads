@@ -12,25 +12,14 @@ class App extends Component {
     shelves: {},
   }
 
-  componentDidMount = async () => {
-    try {
-      const books = await BooksAPI.getAll();
-      this.addBooksToShelves(books);
-    } catch (error) {
-      throw (error);
-    }
-  }
-
   addBooksToShelves = (books = []) => {
-    const shelves = {};
-
-    books.forEach((book) => {
-      if (!shelves[book.shelf]) {
-        shelves[book.shelf] = [];
-      }
-
-      shelves[book.shelf].push(book);
-    });
+    const shelves = books.reduce((acc, book) => ({
+      ...acc,
+      [book.shelf]: [
+        ...(acc[book.shelf] || []),
+        book,
+      ],
+    }), {});
 
     this.setState({ shelves });
   }
@@ -87,6 +76,7 @@ class App extends Component {
           render={() => (
             <BookList
               shelves={shelves}
+              onBooksLoad={this.addBooksToShelves}
               onChangeBookShelf={this.changeBookShelf}
             />
           )}
