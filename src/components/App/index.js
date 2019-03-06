@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Route } from 'react-router-dom';
+import { Switch, Route } from 'react-router-dom';
 import * as BooksAPI from '../../api/BooksAPI';
 
 import './index.css';
@@ -30,34 +30,34 @@ class App extends Component {
     this.updateBookShelf({ book, newShelf });
   }
 
-  removeBookFromShelf = (book) => {
+  removeBookFromShelf = (book = {}) => {
     const { shelves } = this.state;
 
     if (book.shelf) {
       shelves[book.shelf] = shelves[book.shelf].filter(({ id }) => (
         id !== book.id
       ));
-    }
 
-    this.setState({ shelves });
+      this.setState({ shelves });
+    }
   }
 
-  addBookToShelf = ({ book, newShelf }) => {
+  addBookToShelf = ({ book, newShelf } = {}) => {
     const { shelves } = this.state;
-    const newBook = book;
-    newBook.oldShelf = book.shelf;
-    newBook.shelf = newShelf;
+    const newBook = book || {};
 
     if (newShelf) {
-      shelves[newShelf].push(newBook);
-    }
+      newBook.oldShelf = newBook.shelf;
+      newBook.shelf = newShelf;
 
-    this.setState({ shelves });
+      shelves[newShelf].push(newBook);
+      this.setState({ shelves });
+    }
   }
 
-  updateBookShelf = async ({ book, newShelf }) => {
+  updateBookShelf = async ({ book, newShelf = 'none' }) => {
     try {
-      await BooksAPI.update(book, newShelf || 'none');
+      await BooksAPI.update(book, newShelf);
     } catch (error) {
       this.removeBookFromShelf(book);
       this.addBookToShelf({ book, newShelf: book.oldShelf });
@@ -70,25 +70,27 @@ class App extends Component {
 
     return (
       <div className="app">
-        <Route
-          exact
-          path="/"
-          render={() => (
-            <BookList
-              shelves={shelves}
-              onBooksLoad={this.addBooksToShelves}
-              onChangeBookShelf={this.changeBookShelf}
-            />
-          )}
-        />
-        <Route
-          path="/search"
-          render={() => (
-            <BookSearch
-              onChangeBookShelf={this.changeBookShelf}
-            />
-          )}
-        />
+        <Switch>
+          <Route
+            exact
+            path="/"
+            render={() => (
+              <BookList
+                shelves={shelves}
+                onBooksLoad={this.addBooksToShelves}
+                onChangeBookShelf={this.changeBookShelf}
+              />
+            )}
+          />
+          <Route
+            path="/search"
+            render={() => (
+              <BookSearch
+                onChangeBookShelf={this.changeBookShelf}
+              />
+            )}
+          />
+        </Switch>
       </div>
     );
   }
