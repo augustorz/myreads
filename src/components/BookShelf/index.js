@@ -8,7 +8,10 @@ const BookShelf = ({ title, books, onChangeBookShelf }) => (
   <div className="bookshelf">
     <h2 className="bookshelf-title">{title}</h2>
     <div className="bookshelf-books">
-      <BooksGrid books={books} onChangeBookShelf={onChangeBookShelf} />
+      {books.length
+        ? <BooksGrid books={books} onChangeBookShelf={onChangeBookShelf} />
+        : <p className="bookshelf__message">No books to show.</p>
+      }
     </div>
   </div>
 );
