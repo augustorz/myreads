@@ -12,7 +12,17 @@ class App extends Component {
     shelves: {},
   }
 
-  addBooksToShelves = (books = []) => {
+  setBookShelves = (books = []) => {
+    const shelves = JSON.parse(localStorage.getItem('shelves'));
+
+    if (shelves) {
+      this.setState({ ...shelves });
+    } else {
+      this.addBooksToShelves(books);
+    }
+  };
+
+  addBooksToShelves = (books) => {
     const shelves = books.reduce((acc, book) => ({
       ...acc,
       [book.shelf]: [
@@ -22,6 +32,7 @@ class App extends Component {
     }), {});
 
     this.setState({ shelves });
+    localStorage.setItem('shelves', JSON.stringify({ shelves }));
   }
 
   changeBookShelf = ({ book, newShelf }) => {
@@ -39,6 +50,7 @@ class App extends Component {
       ));
 
       this.setState({ shelves });
+      localStorage.setItem('shelves', JSON.stringify({ shelves }));
     }
   }
 
@@ -52,6 +64,7 @@ class App extends Component {
 
       shelves[newShelf].push(newBook);
       this.setState({ shelves });
+      localStorage.setItem(JSON.stringify({ shelves }));
     }
   }
 
@@ -77,7 +90,7 @@ class App extends Component {
             render={() => (
               <BookList
                 shelves={shelves}
-                onBooksLoad={this.addBooksToShelves}
+                onBooksLoad={this.setBookShelves}
                 onChangeBookShelf={this.changeBookShelf}
               />
             )}
