@@ -48,7 +48,11 @@ class BookList extends Component {
 }
 
 BookList.propTypes = {
-  shelves: PropTypes.instanceOf(Object).isRequired,
+  shelves: PropTypes.shape({
+    currentlyReading: PropTypes.instanceOf(Array),
+    wantToRead: PropTypes.instanceOf(Array),
+    read: PropTypes.instanceOf(Array),
+  }).isRequired,
   onChangeBookShelf: PropTypes.func.isRequired,
   onBooksLoad: PropTypes.func.isRequired,
 };
