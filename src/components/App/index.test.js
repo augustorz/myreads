@@ -4,8 +4,6 @@ import { MemoryRouter } from 'react-router-dom';
 import createBooks from '../../mocks/books';
 
 import App from '.';
-import { create } from 'handlebars';
-import { doesNotReject } from 'assert';
 
 describe('App', () => {
   let wrapper;
@@ -81,15 +79,15 @@ describe('App', () => {
     });
 
     it('should call removeBookFromShelf with book', () => {
-      expect(wrapper.instance().removeBookFromShelf).toHaveBeenCalledWith(book);
+      expect(wrapper.instance().removeBookFromShelf).toBeCalledWith(book);
     });
 
     it('should call addBookToShelf with payload', () => {
-      expect(wrapper.instance().addBookToShelf).toHaveBeenCalledWith(payload);
+      expect(wrapper.instance().addBookToShelf).toBeCalledWith(payload);
     });
 
     it('should call updateBookShelf with payload', () => {
-      expect(wrapper.instance().updateBookShelf).toHaveBeenCalledWith(payload);
+      expect(wrapper.instance().updateBookShelf).toBeCalledWith(payload);
     });
   });
 
@@ -137,7 +135,7 @@ describe('App', () => {
       });
 
       it('should not call setState', () => {
-        expect(wrapper.setState).not.toHaveBeenCalled();
+        expect(wrapper.setState).not.toBeCalled();
       });
     });
 
@@ -148,7 +146,7 @@ describe('App', () => {
       });
 
       it('should not call setState', () => {
-        expect(wrapper.setState).not.toHaveBeenCalled();
+        expect(wrapper.setState).not.toBeCalled();
       });
     });
   });
@@ -219,7 +217,7 @@ describe('App', () => {
       });
 
       it('should not call setState', () => {
-        expect(wrapper.setState).not.toHaveBeenCalled();
+        expect(wrapper.setState).not.toBeCalled();
       });
     });
   });
@@ -230,18 +228,23 @@ describe('App', () => {
     beforeEach(() => {
       book = createBooks({ quantity: 1, shelf: 'currentlyReading' });
       book.oldShelf = 'wantToRead';
-      
+
       fetch.resetMocks();
       fetch.mockResponse(JSON.stringify({
-        shelves: 'isdahihsd',
+        shelves: {},
       }));
 
       wrapper.instance().addBookToShelf = jest.fn();
       wrapper.instance().removeBookFromShelf = jest.fn();
     });
 
-    it('should call removeBookFromShelf on error', async (done) => {
-      await expect(wrapper.instance().updateBookShelf({ book })).toThrow();
+    it('tests error with async/await', async (done) => {
+      try {
+        await wrapper.instance().updateBookShelf({});
+      } catch (e) {
+        expect(wrapper.instance().addBookToShelf).toBeCalledWith(book);
+        expect(wrapper.instance().addBookToShelf).toBeCalledWith({ book, newShelf: book.oldShelf });
+      }
       done();
     });
   });
