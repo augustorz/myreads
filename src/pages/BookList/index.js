@@ -9,6 +9,13 @@ import BookShelf from '../../components/BookShelf';
 
 class BookList extends Component {
   componentDidMount = async () => {
+    const { onMount } = this.props;
+
+    onMount();
+    this.loadBooks();
+  }
+
+  loadBooks = async () => {
     const { onBooksLoad } = this.props;
 
     try {
@@ -55,6 +62,7 @@ BookList.propTypes = {
   }).isRequired,
   onChangeBookShelf: PropTypes.func.isRequired,
   onBooksLoad: PropTypes.func.isRequired,
+  onMount: PropTypes.func.isRequired,
 };
 
 export default BookList;
