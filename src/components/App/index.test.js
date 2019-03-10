@@ -23,7 +23,60 @@ describe('App', () => {
     expect(routerWrapper.html()).toMatchSnapshot();
   });
 
-  describe('addBooktoShelves', () => {
+  describe('setShelvesFromStorage', () => {
+    describe('when shelves from localStorage is empty', () => {
+      beforeEach(() => {
+        wrapper.setState = jest.fn();
+        wrapper.instance().setShelvesFromStorage();
+      });
+
+      it('should not setState', () => {
+        expect(wrapper.setState).not.toBeCalled();
+      });
+    });
+
+    describe('when shelves from localStorage exists', () => {
+      let shelves;
+
+      beforeEach(() => {
+        shelves = {
+          currentlyReading: [],
+          wantToRead: [],
+          read: [],
+        };
+
+        window.localStorage.setItem('shelves', JSON.stringify(shelves));
+        wrapper.instance().setShelvesFromStorage();
+      });
+
+      it('should set shelves state', () => {
+        expect(wrapper.state('shelves')).toEqual(shelves);
+      });
+    });
+  });
+
+  describe('updateShelvesState', () => {
+    let shelves;
+    beforeEach(() => {
+      shelves = {
+        read: [],
+        wantToRead: [],
+        currentlyReading: [],
+      };
+
+      wrapper.instance().updateShelvesState(shelves);
+    });
+
+    it('should set shelves state as payload', () => {
+      expect(wrapper.state('shelves')).toEqual(shelves);
+    });
+
+    it('should set shelves in localStorage', () => {
+      expect(localStorage.getItem('shelves')).toEqual(JSON.stringify(shelves));
+    });
+  });
+
+  describe('addBooksToShelves', () => {
     let expected;
 
     describe('when books array is not empty', () => {
@@ -44,21 +97,23 @@ describe('App', () => {
           read: [...read],
         };
 
+        wrapper.instance().updateShelvesState = jest.fn();
         wrapper.instance().addBooksToShelves(books);
       });
 
-      it('should set shelves state like expected shelves object', () => {
-        expect(wrapper.state('shelves')).toEqual(expected);
+      it('should call updateShelvesState with expected', () => {
+        expect(wrapper.instance().updateShelvesState).toBeCalledWith(expected);
       });
     });
 
     describe('when books array is empty', () => {
       beforeEach(() => {
+        wrapper.instance().updateShelvesState = jest.fn();
         wrapper.instance().addBooksToShelves();
       });
 
-      it('should set shelves as an empty object', () => {
-        expect(wrapper.state('shelves')).toEqual({});
+      it('should call updateShelvesState with an empty object', () => {
+        expect(wrapper.instance().updateShelvesState).toBeCalledWith({});
       });
     });
   });
@@ -115,6 +170,7 @@ describe('App', () => {
       };
 
       wrapper.setState({ shelves });
+      wrapper.instance().updateShelvesState = jest.fn();
     });
 
     describe('when book is present and has a shelf', () => {
@@ -122,31 +178,29 @@ describe('App', () => {
         wrapper.instance().removeBookFromShelf(book);
       });
 
-      it('should remove book from shelf', () => {
-        expect(wrapper.state('shelves')).toEqual(expected);
+      it('should call updateShelvesState with expected', () => {
+        expect(wrapper.instance().updateShelvesState).toBeCalledWith(expected);
       });
     });
 
     describe('when book is present but does not have a shelf', () => {
       beforeEach(() => {
         book.shelf = undefined;
-        wrapper.setState = jest.fn();
         wrapper.instance().removeBookFromShelf(book);
       });
 
-      it('should not call setState', () => {
-        expect(wrapper.setState).not.toBeCalled();
+      it('should not call updateShelvesState', () => {
+        expect(wrapper.instance().updateShelvesState).not.toBeCalled();
       });
     });
 
     describe('when book is undefined', () => {
       beforeEach(() => {
-        wrapper.setState = jest.fn();
         wrapper.instance().removeBookFromShelf();
       });
 
-      it('should not call setState', () => {
-        expect(wrapper.setState).not.toBeCalled();
+      it('should not call updateShelvesState', () => {
+        expect(wrapper.instance().updateShelvesState).not.toBeCalled();
       });
     });
   });
@@ -174,6 +228,7 @@ describe('App', () => {
       };
 
       wrapper.setState({ shelves });
+      wrapper.instance().updateShelvesState = jest.fn();
     });
 
     describe('when book is present and has a shelf', () => {
@@ -184,8 +239,8 @@ describe('App', () => {
         wrapper.instance().addBookToShelf({ book, newShelf });
       });
 
-      it('should add book to new shelf array', () => {
-        expect(wrapper.state('shelves')).toEqual(expected);
+      it('should call updateShelvesState with expected', () => {
+        expect(wrapper.instance().updateShelvesState).toBeCalledWith(expected);
       });
 
       it('should set shelf and oldShelf if any', () => {
@@ -212,12 +267,11 @@ describe('App', () => {
 
     describe('when function is called with no paramters', () => {
       beforeEach(() => {
-        wrapper.setState = jest.fn();
         wrapper.instance().addBookToShelf();
       });
 
-      it('should not call setState', () => {
-        expect(wrapper.setState).not.toBeCalled();
+      it('should not call updateShelvesState', () => {
+        expect(wrapper.instance().updateShelvesState).not.toBeCalled();
       });
     });
   });
@@ -230,22 +284,40 @@ describe('App', () => {
       book.oldShelf = 'wantToRead';
 
       fetch.resetMocks();
-      fetch.mockResponse(JSON.stringify({
-        shelves: {},
-      }));
+      fetch.mockReject(new Error('Network Error'));
 
       wrapper.instance().addBookToShelf = jest.fn();
       wrapper.instance().removeBookFromShelf = jest.fn();
     });
 
-    it('tests error with async/await', async (done) => {
-      try {
-        await wrapper.instance().updateBookShelf({});
-      } catch (e) {
-        expect(wrapper.instance().addBookToShelf).toBeCalledWith(book);
-        expect(wrapper.instance().addBookToShelf).toBeCalledWith({ book, newShelf: book.oldShelf });
-      }
-      done();
+    describe('when async call gets rejected', () => {
+      it('should call removeBookFromShelf', async (done) => {
+        try {
+          await wrapper.instance().updateBookShelf({ book, newShelf: 'read' });
+        } catch (e) {
+          expect(wrapper.instance().removeBookFromShelf).toBeCalledWith(book);
+        }
+        done();
+      });
+
+      it('should call addBookToShelf', async (done) => {
+        try {
+          await wrapper.instance().updateBookShelf({ book, newShelf: 'read' });
+        } catch (e) {
+          expect(wrapper.instance().addBookToShelf)
+            .toBeCalledWith({ book, newShelf: book.oldShelf });
+        }
+        done();
+      });
+
+      it('should throw error', async (done) => {
+        try {
+          await wrapper.instance().updateBookShelf({ book, newShelf: 'read' });
+        } catch (e) {
+          expect(e.message).toEqual('Network Error');
+        }
+        done();
+      });
     });
   });
 });
