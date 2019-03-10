@@ -25,7 +25,7 @@ class App extends Component {
     localStorage.setItem('shelves', JSON.stringify(shelves));
   }
 
-  addBooksToShelves = (books) => {
+  addBooksToShelves = (books = []) => {
     const shelves = books.reduce((acc, book) => ({
       ...acc,
       [book.shelf]: [
