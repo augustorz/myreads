@@ -8,7 +8,7 @@ import * as BooksAPI from '../../api/BooksAPI';
 import BookShelf from '../../components/BookShelf';
 
 class BookList extends Component {
-  componentDidMount = async () => {
+  componentDidMount = () => {
     const { onMount } = this.props;
 
     onMount();
