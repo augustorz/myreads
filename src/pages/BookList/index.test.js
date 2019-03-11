@@ -1,49 +1,70 @@
 import React from 'react';
 import { mount } from 'enzyme';
-import { waitForElement } from 'enzyme-async-helpers';
 import { MemoryRouter } from 'react-router-dom';
 import createBooks from '../../mocks/books';
 
 import BookList from '.';
-import BookShelf from '../../components/BookShelf';
 
 describe('BookList', () => {
+  let routerWrapper;
   let wrapper;
+  let books;
 
   beforeEach(() => {
     fetch.resetMocks();
+
+    const currentlyReading = createBooks({ quantity: 2, shelf: 'currentlyReading' });
+    const wantToRead = createBooks({ quantity: 3, shelf: 'wantToRead' });
+    const read = createBooks({ quantity: 1, shelf: 'read' });
+
+    books = [
+      ...currentlyReading,
+      ...wantToRead,
+      ...read,
+    ];
+
+    const shelves = {
+      currentlyReading: [...currentlyReading],
+      wantToRead: [...wantToRead],
+      read: [...read],
+    };
+
+    fetch.mockResponse(JSON.stringify({
+      books,
+    }));
+
+    routerWrapper = mount(
+      <MemoryRouter>
+        <BookList
+          shelves={shelves}
+          onMount={jest.fn()}
+          onBooksLoad={jest.fn()}
+          onChangeBookShelf={jest.fn()}
+        />
+      </MemoryRouter>,
+    );
+
+    wrapper = routerWrapper.find(BookList);
   });
 
-  describe('componentDidMount', () => {
+  it('should match snapshot', () => {
+    expect(routerWrapper.html()).toMatchSnapshot();
+  });
+
+  describe('loadBooks', () => {
     beforeEach(async (done) => {
-      const currentlyReading = createBooks({ quantity: 2, shelf: 'currentlyReading' });
-      const wantToRead = createBooks({ quantity: 3, shelf: 'wantToRead' });
-      const read = createBooks({ quantity: 1, shelf: 'read' });
-
-      fetch.mockResponse(JSON.stringify({
-        books: [
-          ...currentlyReading,
-          ...wantToRead,
-          ...read,
-        ],
-      }));
-
-      wrapper = mount(
-        <MemoryRouter>
-          <BookList
-            shelves={{}}
-            onBooksLoad={jest.fn()}
-            onChangeBookShelf={jest.fn()}
-          />
-        </MemoryRouter>,
-      );
-
-      await waitForElement(wrapper, BookShelf);
+      await wrapper.instance().loadBooks();
       done();
     });
 
-    it('should match snapshot', () => {
-      expect(wrapper.html()).toMatchSnapshot();
+    it('should call onBooksLoad with books', () => {
+      expect(wrapper.props().onBooksLoad).toBeCalledWith(books);
+    });
+  });
+
+  describe('componentDidMount', () => {
+    it('should call onMount', () => {
+      expect(wrapper.props().onMount).toBeCalled();
     });
   });
 });
