@@ -1,0 +1,22 @@
+Lista de Estantes - /
+
+|-- Searchbar (livros, estantes) - opcional
+|-- Componente estantes (Currently Reading, Want to Read, Read) - stateful
+|   |-- Componente livro (Card) - stateless
+|-- Botão com opções para adicionar o livro a outras estantes, quando clicado deve mover o livro para nova estante.
+|-- Botão Novo Livro
+
+Adicionar à biblioteca - /search
+
+|-- Searchbar (consulta livros a partir do método search da api)
+|-- Componente livro (Card) - reutilização
+|-- Link para Voltar para /
+
+OBSERVAÇÕES:
+-- Quando um livro está em uma estante, deve ter o mesmo estado na página /search e /.
+
+Clone URL - https://github.com/udacity/reactnd-project-myreads-starter
+
+Styleguides - http://udacity.github.io/frontend-nanodegree-styleguide/index.html
+
+Critérios de Aceitação - https://review.udacity.com/#!/rubrics/1093/view
