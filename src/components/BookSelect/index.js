@@ -11,6 +11,7 @@ const BookSelect = ({ book, onChangeBookShelf }) => {
   return (
     <div className="book-shelf-changer">
       <select
+        className="book-shelf-select"
         value={book.shelf || 'move'}
         onChange={onChange}
       >
