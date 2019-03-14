@@ -52,13 +52,30 @@ describe('BookList', () => {
   });
 
   describe('loadBooks', () => {
-    beforeEach(async (done) => {
-      await wrapper.instance().loadBooks();
-      done();
+    describe('when async call has no errors', () => {
+      beforeEach(async (done) => {
+        await wrapper.instance().loadBooks();
+        done();
+      });
+
+      it('should call onBooksLoad with books', () => {
+        expect(wrapper.props().onBooksLoad).toBeCalledWith(books);
+      });
     });
 
-    it('should call onBooksLoad with books', () => {
-      expect(wrapper.props().onBooksLoad).toBeCalledWith(books);
+    describe('when async calls has errors', () => {
+      beforeEach(() => {
+        fetch.mockReject(new Error('Network Error'));
+      });
+
+      it('should throw error', async (done) => {
+        try {
+          await wrapper.instance().loadBooks();
+        } catch (e) {
+          expect(e.message).toEqual('Network Error');
+        }
+        done();
+      });
     });
   });
 
