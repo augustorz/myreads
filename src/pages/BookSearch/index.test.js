@@ -83,7 +83,7 @@ describe('BookSearch', () => {
         fetch.resetMocks();
       });
 
-      describe('if response is empty', () => {
+      describe('when response is empty', () => {
         beforeEach(async (done) => {
           wrapper.setState = jest.fn();
 
@@ -98,7 +98,7 @@ describe('BookSearch', () => {
         });
       });
 
-      describe('if response is present and has no errors', () => {
+      describe('when response is present and has no query errors', () => {
         let books;
 
         beforeEach(async (done) => {
@@ -117,7 +117,7 @@ describe('BookSearch', () => {
         });
       });
 
-      describe('if response is present but has errors', () => {
+      describe('when response is present but has query errors', () => {
         beforeEach(async (done) => {
           wrapper.setState = jest.fn();
 
@@ -133,6 +133,21 @@ describe('BookSearch', () => {
 
         it('should not call setState', () => {
           expect(wrapper.setState).not.toBeCalled();
+        });
+      });
+
+      describe('when async calls has errors', () => {
+        beforeEach(() => {
+          fetch.mockReject(new Error('Network Error'));
+        });
+
+        it('should throw error', async (done) => {
+          try {
+            await wrapper.instance().searchBooks();
+          } catch (e) {
+            expect(e.message).toEqual('Network Error');
+          }
+          done();
         });
       });
     });
