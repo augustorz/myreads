@@ -1,18 +1,35 @@
 import React from 'react';
 import { mount } from 'enzyme';
 import { MemoryRouter } from 'react-router-dom';
-import createBooks from '../../mocks/books';
+import debounce from 'lodash/debounce';
+import { createBooks, createBook } from '../../mocks/books';
 
 import BookSearch from '.';
+import { create } from 'handlebars';
+
+jest.mock('lodash/debounce');
+debounce.mockImplementation(fn => fn);
 
 describe('BookSearch', () => {
+  let shelves;
   let routerWrapper;
   let wrapper;
 
   beforeEach(() => {
+    const currentlyReading = createBooks({ quantity: 5, shelf: 'currentlyReading' });
+    const wantToRead = createBooks({ quantity: 2, shelf: 'wantToRead' });
+    const read = createBooks({ quantity: 1, shelf: 'read' });
+
+    shelves = {
+      currentlyReading,
+      wantToRead,
+      read,
+    };
+
     routerWrapper = mount(
       <MemoryRouter>
         <BookSearch
+          shelves={shelves}
           onChangeBookShelf={jest.fn()}
         />
       </MemoryRouter>,
@@ -36,7 +53,6 @@ describe('BookSearch', () => {
           },
         };
 
-        wrapper.instance().searchBooks = jest.fn();
         wrapper.instance().handleSearch(event);
       });
 
@@ -48,8 +64,8 @@ describe('BookSearch', () => {
         expect(wrapper.state('query')).toEqual('');
       });
 
-      it('should not call searchBooks', () => {
-        expect(wrapper.instance().searchBooks).not.toBeCalled();
+      it('should not call debounce', () => {
+        expect(debounce).not.toBeCalled();
       });
     });
 
@@ -73,8 +89,8 @@ describe('BookSearch', () => {
         expect(wrapper.state('query')).toEqual(event.target.value);
       });
 
-      it('should call searchBooks', () => {
-        expect(wrapper.instance().searchBooks).toBeCalled();
+      it('should call debounce with searchBooks', () => {
+        expect(debounce).toBeCalledWith(wrapper.instance().searchBooks, 1000);
       });
     });
 
@@ -102,7 +118,7 @@ describe('BookSearch', () => {
         let books;
 
         beforeEach(async (done) => {
-          books = createBooks({ quantity: 2 });
+          books = createBooks({ quantity: 2, shelf: 'currentlyReading' });
 
           fetch.mockResponse(JSON.stringify({
             books,
@@ -149,6 +165,93 @@ describe('BookSearch', () => {
           }
           done();
         });
+      });
+    });
+  });
+
+  describe('isBookInShelf', () => {
+    let shelf;
+    let isBookInShelf;
+
+    beforeEach(() => {
+      shelf = createBooks({ quantity: 10, shelf: 'currentlyReading' });
+    });
+
+    describe('when book is in shelf', () => {
+      beforeEach(() => {
+        const book = shelf[0];
+        isBookInShelf = wrapper.instance().isBookInShelf({ book, shelf });
+      });
+
+      it('should return true', () => {
+        expect(isBookInShelf).toBeTruthy();
+      });
+    });
+
+    describe('when book is not in shelf', () => {
+      beforeEach(() => {
+        const book = createBooks({ shelf: 'read' });
+        isBookInShelf = wrapper.instance().isBookInShelf({ book, shelf });
+      });
+
+      it('should return false', () => {
+        expect(isBookInShelf).toBeFalsy();
+      });
+    });
+  });
+
+  describe('putShelfInBook', () => {
+    let bookWithShelf;
+    let book;
+
+    describe('when book has a shelf', () => {
+      beforeEach(() => {
+        [book] = shelves.currentlyReading;
+        delete book.shelf;
+        bookWithShelf = wrapper.instance().putShelfInBook(book);
+      });
+
+      it('should return book with shelf attribute', () => {
+        expect(bookWithShelf.shelf).toEqual('currentlyReading');
+      });
+    });
+
+    describe('when book has not a shelf', () => {
+      beforeEach(() => {
+        book = createBook({ quantity: 1 });
+        delete book.shelf;
+        bookWithShelf = wrapper.instance().putShelfInBook(book);
+      });
+
+      it('should return book without modifyng it', () => {
+        expect(bookWithShelf).toEqual(book);
+      });
+    });
+  });
+
+  describe('putShelvesInBooks', () => {
+    describe('when books is present', () => {
+      let booksWithShelf;
+      let books;
+
+      beforeEach(() => {
+        books = createBooks({ quantity: 8 });
+        booksWithShelf = wrapper.instance().putShelvesInBooks(books);
+      });
+
+      it('should return books without modifyng it', () => {
+        expect(booksWithShelf).toEqual(books);
+      });
+    });
+
+    describe('when books does not exist', () => {
+      let booksWithShelf;
+      beforeEach(() => {
+        booksWithShelf = wrapper.instance().putShelvesInBooks();
+      });
+
+      it('should return an empty array', () => {
+        expect(booksWithShelf).toEqual([]);
       });
     });
   });
