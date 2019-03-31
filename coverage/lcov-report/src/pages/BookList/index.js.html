@@ -22,7 +22,7 @@
       <div class='fl pad1y space-right2'>
         <span class="strong">100% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>12/12</span>
+        <span class='fraction'>4/4</span>
       </div>
       <div class='fl pad1y space-right2'>
         <span class="strong">100% </span>
@@ -32,12 +32,12 @@
       <div class='fl pad1y space-right2'>
         <span class="strong">100% </span>
         <span class="quiet">Functions</span>
-        <span class='fraction'>4/4</span>
+        <span class='fraction'>2/2</span>
       </div>
       <div class='fl pad1y space-right2'>
         <span class="strong">100% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>12/12</span>
+        <span class='fraction'>4/4</span>
       </div>
     </div>
   </div>
@@ -84,34 +84,7 @@
 39
 40
 41
-42
-43
-44
-45
-46
-47
-48
-49
-50
-51
-52
-53
-54
-55
-56
-57
-58
-59
-60
-61
-62
-63
-64
-65
-66
-67
-68
-69</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+42</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -119,39 +92,14 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">15x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -177,73 +125,44 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import React, { Component } from 'react';
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import React from 'react';
 import { Link } from 'react-router-dom';
-import PropTypes from 'prop-types';
+import { instanceOf, shape, func } from 'prop-types';
 import { SHELVES } from './constants';
 import './index.css';
-import * as BooksAPI from '../../api/BooksAPI';
 &nbsp;
 import BookShelf from '../../components/BookShelf';
 &nbsp;
-class BookList extends Component {
-  componentDidMount = () =&gt; {
-    const { onMount } = this.props;
-&nbsp;
-    onMount();
-    this.loadBooks();
-  }
-&nbsp;
-  loadBooks = async () =&gt; {
-    const { onBooksLoad } = this.props;
-&nbsp;
-    try {
-      const books = await BooksAPI.getAll();
-      onBooksLoad(books);
-    } catch (error) {
-      throw (error);
-    }
-  }
-&nbsp;
-  render() {
-    const { shelves, onChangeBookShelf } = this.props;
-&nbsp;
-    return (
-      &lt;div className="list-books"&gt;
-        &lt;div className="list-books-title"&gt;
-          &lt;h1&gt;MyReads&lt;/h1&gt;
-        &lt;/div&gt;
-        &lt;div className="list-books-content"&gt;
-          {SHELVES.map(({ title, key }) =&gt; (
-            &lt;BookShelf
-              key={key}
-              title={title}
-              books={shelves[key]}
-              onChangeBookShelf={onChangeBookShelf}
-            /&gt;
-          ))}
-        &lt;/div&gt;
-        &lt;div className="open-search"&gt;
-          &lt;Link to="/search"&gt;
-            &lt;button type="button"&gt;Add a book&lt;/button&gt;
-          &lt;/Link&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
-    );
-  }
-}
+const BookList = ({ shelves, onChangeBookShelf }) =&gt; (
+  &lt;div className="list-books"&gt;
+    &lt;div className="list-books-title"&gt;
+      &lt;h1&gt;MyReads&lt;/h1&gt;
+    &lt;/div&gt;
+    &lt;div className="list-books-content"&gt;
+      {SHELVES.map(({ title, key }) =&gt; (
+        &lt;BookShelf
+          key={key}
+          title={title}
+          books={shelves[key]}
+          onChangeBookShelf={onChangeBookShelf}
+        /&gt;
+      ))}
+    &lt;/div&gt;
+    &lt;div className="open-search"&gt;
+      &lt;Link to="/search"&gt;
+        &lt;button type="button"&gt;Add a book&lt;/button&gt;
+      &lt;/Link&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+);
 &nbsp;
 BookList.propTypes = {
-  shelves: PropTypes.shape({
-    currentlyReading: PropTypes.instanceOf(Array),
-    wantToRead: PropTypes.instanceOf(Array),
-    read: PropTypes.instanceOf(Array),
+  shelves: shape({
+    currentlyReading: instanceOf(Array),
+    wantToRead: instanceOf(Array),
+    read: instanceOf(Array),
   }).isRequired,
-  onChangeBookShelf: PropTypes.func.isRequired,
-  onBooksLoad: PropTypes.func.isRequired,
-  onMount: PropTypes.func.isRequired,
+  onChangeBookShelf: func.isRequired,
 };
 &nbsp;
 export default BookList;
@@ -253,7 +172,7 @@ export default BookList;
 </div><!-- /wrapper -->
 <div class='footer quiet pad2 space-top1 center small'>
   Code coverage
-  generated by <a href="https://istanbul.js.org/" target="_blank">istanbul</a> at Thu Mar 14 2019 08:26:49 GMT-0300 (GMT-03:00)
+  generated by <a href="https://istanbul.js.org/" target="_blank">istanbul</a> at Sun Mar 31 2019 15:45:24 GMT-0300 (GMT-03:00)
 </div>
 </div>
 <script src="../../../prettify.js"></script>
