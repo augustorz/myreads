@@ -1,4 +1,4 @@
-export default ({ quantity = 1, shelf = 'wantToRead' }) => (
+export const createBooks = ({ quantity = 1, shelf = 'wantToRead' }) => (
   Array.from(Array(quantity), (value, index) => ({
     id: `book-${index}`,
     title: `Author Mock ${index}`,
@@ -9,3 +9,21 @@ export default ({ quantity = 1, shelf = 'wantToRead' }) => (
     shelf,
   }))
 );
+
+export const createBook = ({
+  id = 'book-id-1',
+  title = 'title-1',
+  authors = ['author-1'],
+  imageLinks = {
+    thumbnail: 'thumbnail_1.jpg',
+  },
+  shelf = 'wantToRead',
+}) => ({
+  id,
+  title,
+  authors,
+  imageLinks,
+  shelf,
+});
+
+export default createBooks;
