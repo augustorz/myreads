@@ -24,7 +24,25 @@ describe('App', () => {
   });
 
   describe('when route is /', () => {
+    let books;
+
     beforeEach(() => {
+      fetch.resetMocks();
+
+      const currentlyReading = createBooks({ quantity: 2, shelf: 'currentlyReading' });
+      const wantToRead = createBooks({ quantity: 3, shelf: 'wantToRead' });
+      const read = createBooks({ quantity: 1, shelf: 'read' });
+
+      books = [
+        ...currentlyReading,
+        ...wantToRead,
+        ...read,
+      ];
+
+      fetch.mockResponse(JSON.stringify({
+        books,
+      }));
+
       routerWrapper = shallow(
         <MemoryRouter initialEntries={['/']}>
           <App />
@@ -39,14 +57,23 @@ describe('App', () => {
     });
 
     describe('setShelvesFromStorage', () => {
+      beforeEach(() => {
+        wrapper.instance().getAllBooks = jest.fn();
+        wrapper.setState = jest.fn();
+      });
+
       describe('when shelves from localStorage is empty', () => {
         beforeEach(() => {
-          wrapper.setState = jest.fn();
+          window.localStorage.clear();
           wrapper.instance().setShelvesFromStorage();
         });
 
-        it('should not setState', () => {
+        it('should not call setState', () => {
           expect(wrapper.setState).not.toBeCalled();
+        });
+
+        it('should call getAllBooks', () => {
+          expect(wrapper.instance().getAllBooks).toBeCalled();
         });
       });
 
@@ -64,8 +91,29 @@ describe('App', () => {
           wrapper.instance().setShelvesFromStorage();
         });
 
-        it('should set shelves state', () => {
-          expect(wrapper.state('shelves')).toEqual(shelves);
+        it('should call setState', () => {
+          expect(wrapper.setState).toBeCalledWith({ shelves });
+        });
+
+        it('should not call getAllBooks', () => {
+          expect(wrapper.instance().getAllBooks).not.toBeCalled();
+        });
+      });
+    });
+
+    describe('getAllBooks', () => {
+      describe('when async call gets rejected', () => {
+        beforeEach(() => {
+          fetch.mockReject(new Error('Network Error'));
+        });
+
+        it('should throw error', async (done) => {
+          try {
+            await wrapper.instance().getAllBooks();
+          } catch (e) {
+            expect(e.message).toEqual('Network Error');
+          }
+          done();
         });
       });
     });
@@ -79,11 +127,12 @@ describe('App', () => {
           currentlyReading: [],
         };
 
+        wrapper.setState = jest.fn();
         wrapper.instance().updateShelvesState(shelves);
       });
 
       it('should set shelves state as payload', () => {
-        expect(wrapper.state('shelves')).toEqual(shelves);
+        expect(wrapper.setState).toBeCalledWith({ shelves });
       });
 
       it('should set shelves in localStorage', () => {
@@ -100,7 +149,7 @@ describe('App', () => {
           const wantToRead = createBooks({ quantity: 1, shelf: 'wantToRead' });
           const read = createBooks({ quantity: 2, shelf: 'read' });
 
-          const books = [
+          books = [
             ...currentlyReading,
             ...wantToRead,
             ...read,
@@ -280,9 +329,9 @@ describe('App', () => {
         });
       });
 
-      describe('when function is called with no paramters', () => {
+      describe('when function is called with empty object', () => {
         beforeEach(() => {
-          wrapper.instance().addBookToShelf();
+          wrapper.instance().addBookToShelf({});
         });
 
         it('should not call updateShelvesState', () => {
@@ -311,7 +360,7 @@ describe('App', () => {
 
         it('should call removeBookFromShelf', async (done) => {
           try {
-            await wrapper.instance().updateBookShelf({ book, newShelf: 'read' });
+            await wrapper.instance().updateBookShelf({ book });
           } catch (e) {
             expect(wrapper.instance().removeBookFromShelf).toBeCalledWith(book);
           }

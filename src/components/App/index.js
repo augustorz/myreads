@@ -12,13 +12,28 @@ class App extends Component {
     shelves: {},
   }
 
+  componentDidMount = () => {
+    this.setShelvesFromStorage();
+  }
+
   setShelvesFromStorage = () => {
     const shelves = JSON.parse(localStorage.getItem('shelves'));
 
     if (shelves) {
       this.setState({ shelves });
+    } else {
+      this.getAllBooks();
     }
-  };
+  }
+
+  getAllBooks = async () => {
+    try {
+      const books = await BooksAPI.getAll();
+      this.addBooksToShelves(books);
+    } catch (error) {
+      throw (error);
+    }
+  }
 
   updateShelvesState = (shelves) => {
     this.setState({ shelves });
@@ -55,7 +70,7 @@ class App extends Component {
     }
   }
 
-  addBookToShelf = ({ book, newShelf } = {}) => {
+  addBookToShelf = ({ book, newShelf }) => {
     const { shelves } = this.state;
     const newBook = book || {};
 
@@ -65,6 +80,9 @@ class App extends Component {
 
       shelves[newShelf].push(newBook);
       this.updateShelvesState(shelves);
+    } else {
+      delete newBook.shelf;
+      delete newBook.oldShelf;
     }
   }
 
@@ -90,8 +108,6 @@ class App extends Component {
             render={() => (
               <BookList
                 shelves={shelves}
-                onMount={this.setShelvesFromStorage}
-                onBooksLoad={this.addBooksToShelves}
                 onChangeBookShelf={this.changeBookShelf}
               />
             )}
@@ -100,6 +116,7 @@ class App extends Component {
             path="/search"
             render={() => (
               <BookSearch
+                shelves={shelves}
                 onChangeBookShelf={this.changeBookShelf}
               />
             )}
