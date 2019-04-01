@@ -1,7 +1,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import { MemoryRouter } from 'react-router-dom';
-import createBooks from '../../mocks/books';
+import { createBooks } from '../../mocks/books';
 
 import App from '.';
 
@@ -13,6 +13,20 @@ describe('App', () => {
     beforeEach(() => {
       routerWrapper = shallow(
         <MemoryRouter initialEntries={['/search']}>
+          <App />
+        </MemoryRouter>,
+      );
+    });
+
+    it('should match snapshot', () => {
+      expect(routerWrapper.html()).toMatchSnapshot();
+    });
+  });
+
+  describe('when route is /something', () => {
+    beforeEach(() => {
+      routerWrapper = shallow(
+        <MemoryRouter initialEntries={['/asdfasdf']}>
           <App />
         </MemoryRouter>,
       );
