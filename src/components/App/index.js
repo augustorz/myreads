@@ -121,6 +121,14 @@ class App extends Component {
               />
             )}
           />
+          <Route
+            render={() => (
+              <BookList
+                shelves={shelves}
+                onChangeBookShelf={this.changeBookShelf}
+              />
+            )}
+          />
         </Switch>
       </div>
     );
