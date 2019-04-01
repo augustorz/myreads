@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1554057924558" clover="3.2.0">
-  <project timestamp="1554057924558" name="All files">
+<coverage generated="1554161977847" clover="3.2.0">
+  <project timestamp="1554161977848" name="All files">
     <metrics statements="96" coveredstatements="96" conditionals="37" coveredconditionals="37" methods="35" coveredmethods="35" elements="168" coveredelements="168" complexity="0" loc="96" ncloc="96" packages="9" files="11" classes="11">
       <package name="src">
         <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
@@ -11,9 +11,9 @@
         </file>
       </package>
       <package name="src.components.App">
-        <metrics statements="39" coveredstatements="39" conditionals="13" coveredconditionals="13" methods="14" coveredmethods="14"/>
+        <metrics statements="40" coveredstatements="40" conditionals="13" coveredconditionals="13" methods="15" coveredmethods="15"/>
         <file name="index.js" path="/home/augusto/myreads/src/components/App/index.js">
-          <metrics statements="39" coveredstatements="39" conditionals="13" coveredconditionals="13" methods="14" coveredmethods="14"/>
+          <metrics statements="40" coveredstatements="40" conditionals="13" coveredconditionals="13" methods="15" coveredmethods="15"/>
           <line num="16" count="23" type="stmt"/>
           <line num="20" count="27" type="stmt"/>
           <line num="22" count="27" type="cond" truecount="2" falsecount="0"/>
@@ -49,19 +49,19 @@
           <line num="93" count="3" type="stmt"/>
           <line num="94" count="3" type="stmt"/>
           <line num="95" count="3" type="stmt"/>
-          <line num="100" count="53" type="stmt"/>
-          <line num="102" count="53" type="stmt"/>
+          <line num="100" count="54" type="stmt"/>
+          <line num="102" count="54" type="stmt"/>
           <line num="109" count="1" type="stmt"/>
           <line num="118" count="1" type="stmt"/>
+          <line num="126" count="1" type="stmt"/>
         </file>
       </package>
       <package name="src.components.Book">
-        <metrics statements="5" coveredstatements="5" conditionals="4" coveredconditionals="4" methods="2" coveredmethods="2"/>
+        <metrics statements="4" coveredstatements="4" conditionals="4" coveredconditionals="4" methods="1" coveredmethods="1"/>
         <file name="index.js" path="/home/augusto/myreads/src/components/Book/index.js">
-          <metrics statements="5" coveredstatements="5" conditionals="4" coveredconditionals="4" methods="2" coveredmethods="2"/>
+          <metrics statements="4" coveredstatements="4" conditionals="4" coveredconditionals="4" methods="1" coveredmethods="1"/>
           <line num="7" count="6" type="stmt"/>
-          <line num="8" count="18" type="stmt"/>
-          <line num="22" count="18" type="stmt"/>
+          <line num="8" count="19" type="stmt"/>
           <line num="27" count="6" type="stmt"/>
           <line num="38" count="6" type="stmt"/>
         </file>
@@ -75,10 +75,10 @@
         <file name="index.js" path="/home/augusto/myreads/src/components/BookSelect/index.js">
           <metrics statements="6" coveredstatements="6" conditionals="2" coveredconditionals="2" methods="3" coveredmethods="3"/>
           <line num="6" count="7" type="stmt"/>
-          <line num="7" count="20" type="stmt"/>
+          <line num="7" count="21" type="stmt"/>
           <line num="8" count="1" type="stmt"/>
-          <line num="11" count="20" type="stmt"/>
-          <line num="23" count="80" type="stmt"/>
+          <line num="11" count="21" type="stmt"/>
+          <line num="23" count="84" type="stmt"/>
           <line num="33" count="7" type="stmt"/>
         </file>
       </package>
@@ -87,7 +87,7 @@
         <file name="index.js" path="/home/augusto/myreads/src/components/BookShelf/index.js">
           <metrics statements="4" coveredstatements="4" conditionals="2" coveredconditionals="2" methods="1" coveredmethods="1"/>
           <line num="7" count="3" type="stmt"/>
-          <line num="8" count="8" type="stmt"/>
+          <line num="8" count="11" type="stmt"/>
           <line num="19" count="3" type="stmt"/>
           <line num="25" count="3" type="stmt"/>
         </file>
@@ -108,9 +108,9 @@
         <file name="books.js" path="/home/augusto/myreads/src/mocks/books.js">
           <metrics statements="4" coveredstatements="4" conditionals="7" coveredconditionals="7" methods="3" coveredmethods="3"/>
           <line num="1" count="7" type="cond" truecount="2" falsecount="0"/>
-          <line num="2" count="420" type="stmt"/>
+          <line num="2" count="419" type="stmt"/>
           <line num="13" count="7" type="stmt"/>
-          <line num="21" count="1" type="stmt"/>
+          <line num="21" count="3" type="stmt"/>
         </file>
       </package>
       <package name="src.pages.BookList">
@@ -122,8 +122,8 @@
         <file name="index.js" path="/home/augusto/myreads/src/pages/BookList/index.js">
           <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
           <line num="9" count="2" type="stmt"/>
-          <line num="10" count="2" type="stmt"/>
-          <line num="16" count="6" type="stmt"/>
+          <line num="10" count="3" type="stmt"/>
+          <line num="16" count="9" type="stmt"/>
           <line num="32" count="2" type="stmt"/>
         </file>
       </package>
